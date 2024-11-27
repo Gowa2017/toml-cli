@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/MinseokOh/toml-cli/toml"
@@ -16,30 +15,23 @@ const (
 // SetTomlCommand returns set command
 func SetTomlCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set [path] [query] [data]",
+		Use:   "set key attr value [attr1 value1]",
 		Short: "Edit the file to set some data",
 		Long: `
 e.g.
-toml-cli set ./sample/example.toml title 123456
+toml-cli set  192.168.11.11 title 123456
 
 e.g.
-toml-cli set ./sample/example.toml title 123456 -o ./sample/example_out.toml
+toml-cli set  192.168.11.11 title 123456 comment 测试主机 -o out.toml
 `,
-		Args: cobra.ExactArgs(3),
+		Args: cobra.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			path := args[0]
-			query := args[1]
-			data := parseInput(args[2])
-			if data == nil {
-				return fmt.Errorf("data is nil")
-			}
+			key := args[0]
 
 			outDir, err := cmd.Flags().GetString(flagOut)
 			if err != nil {
 				return err
 			}
-
-
 			toml, err := toml.NewToml(path)
 			if err != nil {
 				return err
@@ -47,8 +39,11 @@ toml-cli set ./sample/example.toml title 123456 -o ./sample/example_out.toml
 
 			toml.Out(outDir)
 
-			if err := toml.Set(query, data); err != nil {
-				return err
+			for i := 1; i < len(args); i += 2 {
+				if err := toml.Set(key, args[i], args[i+1]); err != nil {
+					return err
+				}
+
 			}
 
 			if err := toml.Write(); err != nil {
