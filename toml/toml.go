@@ -78,12 +78,20 @@ func (t *Toml) Keys() []string {
 func (t *Toml) List(query string) []string {
 	dst := make([]string, 0)
 	for _, k := range t.tree.Keys() {
+		var business, comment any = "", ""
+		if v := t.tree.GetPath([]string{k, "business"}); v != nil {
+			business = v
+		}
+		if v := t.tree.GetPath([]string{k, "comment"}); v != nil {
+			comment = v
+		}
+
 		if query == "" {
-			dst = append(dst, fmt.Sprintf("%s\t%v\t%v", k, t.tree.GetPath([]string{k, "business"}), t.tree.GetPath([]string{k, "comment"})))
+			dst = append(dst, fmt.Sprintf("%s\t%v\t%v", k, business, comment))
 			continue
 		}
 		if strings.Contains(strings.ToLower(k), strings.ToLower(query)) {
-			dst = append(dst, fmt.Sprintf("%s\t%v\t%v", k, t.tree.GetPath([]string{k, "business"}), t.tree.GetPath([]string{k, "comment"})))
+			dst = append(dst, fmt.Sprintf("%s\t%v\t%v", k, business, comment))
 		}
 	}
 	return dst
