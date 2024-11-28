@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -36,6 +37,8 @@ func init() {
 	rootCmd.AddCommand(ClearTomlCommand())
 	rootCmd.AddCommand(FingerTomlCommand())
 	rootCmd.AddCommand(NamespaceTomlCommand())
+	rootCmd.AddCommand(RenameTomlCommand())
+	rootCmd.AddCommand(ScanTomlCommand())
 }
 
 // Execute commands
@@ -58,4 +61,10 @@ func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
+}
+
+func printAConfigure(k string, v any) {
+	fmt.Println(k)
+	fmt.Println(v)
+	fmt.Println(strings.Repeat("-", 30))
 }

@@ -64,7 +64,11 @@ func (t *Toml) Get(query string) interface{} {
 // Set the value at key in the Tree.
 // [Wrapped function go-toml.]
 func (t *Toml) Set(query, attr string, data interface{}) error {
-	t.tree.SetPath([]string{query, attr}, data)
+	path := []string{query}
+	if attr != "" {
+		path = append(path, attr)
+	}
+	t.tree.SetPath(path, data)
 	return nil
 }
 
@@ -78,7 +82,7 @@ func (t *Toml) List(query string) []string {
 			dst = append(dst, fmt.Sprintf("%s\t%v\t%v", k, t.tree.GetPath([]string{k, "business"}), t.tree.GetPath([]string{k, "comment"})))
 			continue
 		}
-		if strings.Index(k, query) == 0 {
+		if strings.Contains(strings.ToLower(k), strings.ToLower(query)) {
 			dst = append(dst, fmt.Sprintf("%s\t%v\t%v", k, t.tree.GetPath([]string{k, "business"}), t.tree.GetPath([]string{k, "comment"})))
 		}
 	}

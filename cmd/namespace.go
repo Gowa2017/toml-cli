@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/MinseokOh/toml-cli/toml"
@@ -28,9 +29,15 @@ toml-cli ns
 			for _, k := range toml.Keys() {
 				ns[strings.Split(k, ":")[0]]++
 			}
+			keys := make([]string, 0, len(ns))
+			for k := range ns {
+				keys = append(keys, k)
+			}
+			sort.Strings(keys)
+
 			fmt.Printf("%10s: %s\n", "namespace", "config number")
-			for k, v := range ns {
-				fmt.Printf("%10s: %d\n", k, v)
+			for _, k := range keys {
+				fmt.Printf("%10s: %d\n", k, ns[k])
 			}
 			return nil
 		},

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/MinseokOh/toml-cli/toml"
@@ -20,7 +19,10 @@ toml-cli f  title
 TOML Example
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			query := args[0]
+			var query = ""
+			if len(args) > 0 {
+				query = args[0]
+			}
 
 			toml, err := toml.NewToml(path)
 			if err != nil {
@@ -28,10 +30,8 @@ TOML Example
 			}
 
 			for _, k := range toml.Keys() {
-				if strings.Index(k, query) == 0 {
-					fmt.Println(k)
-					fmt.Println(toml.Get(k))
-					fmt.Println(strings.Repeat("-", 30))
+				if strings.Contains(strings.ToLower(k), strings.ToLower(query)) {
+					printAConfigure(k, toml.Get(k))
 				}
 			}
 			return nil

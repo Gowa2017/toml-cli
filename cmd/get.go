@@ -10,8 +10,9 @@ import (
 // GetTomlCommand returns get command
 func GetTomlCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get [query]",
-		Short: "Print some data from the file",
+		Use:     "get [query]",
+		Aliases: []string{"q"},
+		Short:   "Print some data from the file",
 		Long: `
 e.g.
 toml-cli get  title

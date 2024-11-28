@@ -15,8 +15,9 @@ const (
 // SetTomlCommand returns set command
 func SetTomlCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set key attr value [attr1 value1]",
-		Short: "Edit the file to set some data",
+		Use:     "set key attr value [attr1 value1]",
+		Short:   "Edit the file to set some data",
+		Aliases: []string{"s"},
 		Long: `
 e.g.
 toml-cli set  192.168.11.11 title 123456

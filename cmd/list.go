@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/MinseokOh/toml-cli/toml"
 	"github.com/spf13/cobra"
@@ -21,7 +22,9 @@ func ListTomlCommand() *cobra.Command {
 			if len(args) > 0 {
 				query = args[0]
 			}
-			for _, k := range toml.List(query) {
+			res := toml.List(query)
+			sort.Strings(res)
+			for _, k := range res {
 				fmt.Println(k)
 			}
 			return nil
