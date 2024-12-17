@@ -44,12 +44,12 @@ toml-cli set  192.168.11.11 title 123456 comment 测试主机 -o out.toml
 				if err := toml.Set(key, args[i], args[i+1]); err != nil {
 					return err
 				}
-
 			}
 
 			if err := toml.Write(); err != nil {
 				return err
 			}
+            printAConfigure(key, toml.Get(key))
 
 			return nil
 		},

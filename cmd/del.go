@@ -22,6 +22,7 @@ func DeleteTomlCommand() *cobra.Command {
 			if err := toml.Write(); err != nil {
 				return err
 			}
+			printAConfigure(args[0], toml.Get(args[0]))
 			return nil
 		},
 	}

@@ -32,6 +32,7 @@ func RenameTomlCommand() *cobra.Command {
 			if err := toml.Write(); err != nil {
 				return fmt.Errorf("Save error: %v", err)
 			}
+			printAConfigure(nk, toml.Get(nk))
 			return nil
 		},
 	}

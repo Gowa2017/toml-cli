@@ -24,8 +24,8 @@ func ListTomlCommand() *cobra.Command {
 			}
 			res := toml.List(query)
 			sort.Strings(res)
-			for _, k := range res {
-				fmt.Println(k)
+			for i, k := range res {
+				fmt.Printf("%4d\t%s\n", i+1, k)
 			}
 			return nil
 		},
