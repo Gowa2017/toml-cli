@@ -12,7 +12,7 @@ func ListTomlCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "list [query]",
 		Aliases: []string{"l", "ls"},
-		Short:   "List keys",
+		Short:   "List keys of fluzz which contains `query`",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			toml, err := toml.NewToml(path)
 			if err != nil {

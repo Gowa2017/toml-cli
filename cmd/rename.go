@@ -10,7 +10,7 @@ import (
 func RenameTomlCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "rename oldkey newkey",
-		Short: "rename a key",
+		Short: "Rename a key",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ok := args[0]

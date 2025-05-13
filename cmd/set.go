@@ -20,10 +20,10 @@ func SetTomlCommand() *cobra.Command {
 		Aliases: []string{"s"},
 		Long: `
 e.g.
-toml-cli set  192.168.11.11 title 123456
+cm set  192.168.11.11 title 123456
 
 e.g.
-toml-cli set  192.168.11.11 title 123456 comment 测试主机 -o out.toml
+cm set  192.168.11.11 title 123456 comment 测试主机 -o out.toml
 `,
 		Args: cobra.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {

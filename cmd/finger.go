@@ -15,8 +15,7 @@ func FingerTomlCommand() *cobra.Command {
 		Short:   "show config info",
 		Long: `
 e.g.
-toml-cli f  title
-TOML Example
+cm f title
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var query = ""

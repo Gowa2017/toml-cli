@@ -15,11 +15,10 @@ func ScanTomlCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "scan [query]",
 		Aliases: []string{"f"},
-		Short:   "Scan key and contens",
+		Short:   "Scan entry which key or attr contains `query`",
 		Long: `
 e.g.
-toml-cli scan  title
-TOML Example
+cm scan title
 `,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -31,7 +30,6 @@ TOML Example
 			}
 
 			for _, k := range toml.Keys() {
-				v := toml.Get(k)
 				pos := strings.Index(strings.ToLower(k), strings.ToLower(query))
 				if pos >= 0 {
 					ori := k[pos : pos+len(query)]
@@ -40,6 +38,7 @@ TOML Example
 					continue
 				}
 
+				v := toml.Get(k)
 				if v == nil {
 					continue
 				}

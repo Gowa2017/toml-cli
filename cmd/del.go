@@ -9,7 +9,7 @@ func DeleteTomlCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "del key attr",
 		Aliases: []string{"d"},
-		Short:   "Delete key's attr",
+		Short:   "Delete a key's attr",
 		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			toml, err := toml.NewToml(path)

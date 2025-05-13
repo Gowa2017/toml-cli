@@ -16,7 +16,7 @@ func NamespaceTomlCommand() *cobra.Command {
 		Short: "show namespace info",
 		Long: `
 e.g.
-toml-cli ns
+cm ns
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			toml, err := toml.NewToml(path)

@@ -18,10 +18,10 @@ var rootCmd = GetRootCommand()
 // GetRootCommand returns root command
 func GetRootCommand() *cobra.Command {
 	rootCmd := &cobra.Command{
-		Use:          "toml-cli",
-		Short:        "toml-cli",
+		Use:          "cm",
+		Short:        "cm",
 		SilenceUsage: true,
-		Long: `A simple CLI for editing and querying TOML files.
+		Long: `A simple CLI for editing and querying TOML files. We use it as a config manager.
 	`,
 	}
 

@@ -10,13 +10,12 @@ import (
 // GetTomlCommand returns get command
 func GetTomlCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "get [query]",
+		Use:     "get query",
 		Aliases: []string{"q"},
-		Short:   "Print some data from the file",
+		Short:   "Get info of key `query`",
 		Long: `
 e.g.
-toml-cli get  title
-TOML Example
+cm get title
 `,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -31,7 +30,7 @@ TOML Example
 				return fmt.Errorf("Key %v does not exist in %v", query, path)
 			}
 
-			fmt.Println(res)
+			printAConfigure(query, res)
 			return nil
 		},
 	}

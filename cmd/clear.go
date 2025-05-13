@@ -7,9 +7,9 @@ import (
 
 func ClearTomlCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "clear key ",
+		Use:     "clear key",
 		Aliases: []string{"clr"},
-		Short:   "remove key",
+		Short:   "Remove key",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			toml, err := toml.NewToml(path)
