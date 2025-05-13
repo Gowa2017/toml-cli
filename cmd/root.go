@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/fatih/color"
+	lib "github.com/pelletier/go-toml"
 	"github.com/spf13/cobra"
 )
 
@@ -64,7 +66,15 @@ func Execute() {
 }
 
 func printAConfigure(k string, v any) {
-	fmt.Println(k)
-	fmt.Println(v)
-	fmt.Println(strings.Repeat("-", 30))
+	color.New(color.FgRed).Add(color.Bold).Add(color.Underline).Printf("%s:\n", k)
+	switch v.(type) {
+	case *lib.Tree:
+		t := v.(*lib.Tree)
+		for k, vv := range t.ToMap() {
+			fmt.Printf("%s = %s\n", k, vv)
+		}
+	default:
+		fmt.Println(v)
+	}
+	color.Blue(strings.Repeat("-", 50))
 }
