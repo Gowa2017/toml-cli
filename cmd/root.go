@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/fatih/color"
@@ -66,12 +67,26 @@ func Execute() {
 }
 
 func printAConfigure(k string, v any) {
-	color.New(color.FgRed).Add(color.Bold).Add(color.Underline).Printf("%s:\n", k)
+	color.New(color.FgRed).Add(color.Bold).Add(color.Underline).Printf("%s\n", k)
 	switch v.(type) {
 	case *lib.Tree:
 		t := v.(*lib.Tree)
-		for k, vv := range t.ToMap() {
-			fmt.Printf("%s = %s\n", k, vv)
+		keys := make([]string, 0, len(t.ToMap()))
+		for k2 := range t.ToMap() {
+			keys = append(keys, k2)
+		}
+		sort.Strings(keys)
+		for _, k := range keys {
+			v = t.ToMap()[k]
+			if s, ok := v.(string); ok {
+				fmt.Printf("%s = %s\n", k, s)
+			} else if m, ok := v.(map[string]any); ok {
+				for kk, vv := range m {
+                    fmt.Printf("%s:\n", k)
+					fmt.Printf("  %s = %s\n", kk, vv)
+				}
+
+			}
 		}
 	default:
 		fmt.Println(v)
