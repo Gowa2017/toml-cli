@@ -62,7 +62,6 @@ func (t *Toml) Set(query, attr string, data interface{}) error {
 	return nil
 }
 
-<<<<<<< HEAD
 func (t *Toml) Keys() []string {
 	return t.tree.Keys()
 }
