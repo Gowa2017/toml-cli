@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"sort"
 	"strings"
 
 	"github.com/MinseokOh/toml-cli/toml"
@@ -28,7 +29,9 @@ cm f title
 				return err
 			}
 
-			for _, k := range toml.Keys() {
+			keys := toml.Keys()
+			sort.Strings(keys)
+			for _, k := range keys {
 				if strings.Contains(strings.ToLower(k), strings.ToLower(query)) {
 					printAConfigure(k, toml.Get(k))
 				}
