@@ -1,4 +1,4 @@
-module github.com/MinseokOh/toml-cli
+module github.com/Gowa2017/toml-cli
 
 go 1.23
 
