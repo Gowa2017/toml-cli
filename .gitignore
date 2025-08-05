@@ -16,4 +16,10 @@
 
 .vscode/
 .idea/
+
 toml-cli
+
+# Test output files
+*test_output.toml
+*test_merged.toml
+*_test_*.toml

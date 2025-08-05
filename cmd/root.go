@@ -10,6 +10,7 @@ import (
 	"github.com/fatih/color"
 	lib "github.com/pelletier/go-toml"
 	"github.com/spf13/cobra"
+	"os"
 )
 
 var path string

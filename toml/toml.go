@@ -20,17 +20,13 @@ type Toml struct {
 
 // NewToml returns the Toml
 func NewToml(path string) (Toml, error) {
-	toml := Toml{
-		path: path,
-	}
+	toml := Toml{path: path}
 
-	err := toml.readFile()
-	if err != nil {
+	if err := toml.readFile(); err != nil {
 		return toml, err
 	}
 
-	err = toml.load()
-	if err != nil {
+	if err := toml.load(); err != nil {
 		return toml, err
 	}
 
@@ -39,14 +35,8 @@ func NewToml(path string) (Toml, error) {
 
 func (t *Toml) load() error {
 	var err error
-
 	t.tree, err = lib.LoadBytes(t.raw)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 // Dest set output given path
@@ -72,6 +62,7 @@ func (t *Toml) Set(query, attr string, data interface{}) error {
 	return nil
 }
 
+<<<<<<< HEAD
 func (t *Toml) Keys() []string {
 	return t.tree.Keys()
 }
@@ -121,4 +112,33 @@ func (t *Toml) ToJson() (string, error) {
 
 func (t *Toml) ToToml() (string, error) {
 	return t.tree.ToTomlString()
+}
+// Merge merges another TOML file into this one
+func (t *Toml) Merge(other *Toml) error {
+	return t.mergeTree(t.tree, other.tree)
+}
+
+// mergeTree recursively merges source tree into target tree
+func (t *Toml) mergeTree(target, source *lib.Tree) error {
+	for _, key := range source.Keys() {
+		sourceValue := source.Get(key)
+
+		if target.Has(key) {
+			targetValue := target.Get(key)
+
+			// If both are trees (nested objects), merge recursively
+			if sourceTree, ok := sourceValue.(*lib.Tree); ok {
+				if targetTree, ok := targetValue.(*lib.Tree); ok {
+					if err := t.mergeTree(targetTree, sourceTree); err != nil {
+						return err
+					}
+					continue
+				}
+			}
+		}
+
+		// For all other cases (primitives, arrays, or new keys), overwrite
+		target.Set(key, sourceValue)
+	}
+	return nil
 }
