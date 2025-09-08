@@ -4,19 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a CLI tool for editing and querying TOML files, written in Go. It provides three main commands:
+This is a CLI tool for editing and querying TOML files, written in Go. It provides multiple commands for managing TOML configuration files:
 - `get`: Extract values from TOML files using dot notation queries
 - `set`: Update values in TOML files with optional output file specification
 - `merge`: Merge two TOML files with recursive object merging
+- Additional commands for listing, deleting, clearing, dumping, importing, and scanning TOML files
 
 ## Development Commands
 
 ### Build and Run
 ```bash
-go build -o toml-cli
-./toml-cli get ./sample/get-set/app.toml server.port
-./toml-cli set ./sample/get-set/app.toml server.port 3000 [-o output_file]
-./toml-cli merge ./sample/merge/base.toml ./sample/merge/override.toml [-o output_file]
+go build -o cm
+./cm get -c ./sample/get-set/app.toml app.name
+./cm set -c ./sample/get-set/app.toml 192.168.11.11 title test [-o output_file]
+./cm merge ./sample/merge/base.toml ./sample/merge/override.toml [-o output_file]
 ```
 
 ### Testing
@@ -42,13 +43,11 @@ go fmt ./...              # Format code
    - `get.go`: Implementation of get command for querying TOML values
    - `set.go`: Implementation of set command for updating TOML values
    - `merge.go`: Implementation of merge command for combining TOML files
+   - Additional command files for extended functionality (list, delete, clear, dump, import, scan, etc.)
 
 2. **TOML Processing** (`toml/`):
-   - `toml.go`: Core TOML wrapper around pelletier/go-toml library
+   - `toml.go`: Core TOML wrapper around pelletier/go-toml library with additional functionality
    - `tomlw.go`: File I/O operations for reading/writing TOML files
-   - `keysparsing.go`: Key parsing utilities for dot notation queries
-   - `lexer.go`: TOML lexical analysis
-   - `position.go` & `token.go`: Supporting lexer infrastructure
 
 3. **Entry Point**:
    - `main.go`: Simple entry point that calls cmd.Execute()
@@ -57,6 +56,7 @@ go fmt ./...              # Format code
 - `github.com/pelletier/go-toml`: Core TOML parsing library
 - `github.com/spf13/cobra`: CLI framework
 - `github.com/stretchr/testify`: Testing framework
+- `github.com/fatih/color`: Terminal color output
 
 ### Data Flow
 1. Commands parse arguments using cobra
@@ -76,10 +76,7 @@ The `set` command automatically detects and converts input types:
 ## Testing Strategy
 
 The codebase includes comprehensive tests in the `toml/` package covering:
-- Key parsing with various formats (bare keys, quoted keys, dotted keys)
-- TOML lexing and tokenization
-- Core TOML operations (get/set)
-- Date/time parsing
-- Array and inline table handling
-- Unicode support
+- Core TOML operations (get/set/merge)
 - Error cases and edge conditions
+- Value type handling
+- File I/O operations
