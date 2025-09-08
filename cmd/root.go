@@ -66,26 +66,48 @@ func Execute() {
 	}
 }
 
-func printAConfigure(k string, v any) {
-	color.New(color.FgRed).Add(color.Bold).Add(color.Underline).Printf("%s\n", k)
+func printAConfigure(key string, v any) {
+	color.New(color.FgRed).Add(color.Bold).Add(color.Underline).Printf("%s\n", key)
 	switch v.(type) {
 	case *lib.Tree:
-		t := v.(*lib.Tree)
-		keys := make([]string, 0, len(t.ToMap()))
-		for k2 := range t.ToMap() {
-			keys = append(keys, k2)
+		tree := v.(*lib.Tree)
+		keys := make([]string, 0, len(tree.ToMap()))
+		for k := range tree.ToMap() {
+			keys = append(keys, k)
 		}
 		sort.Strings(keys)
+		
+		// Calculate the maximum key length for consistent width
+		maxKeyLength := 0
+		treeMap := tree.ToMap()
 		for _, k := range keys {
-			v = t.ToMap()[k]
-			if s, ok := v.(string); ok {
-				fmt.Printf("%s = %s\n", k, s)
-			} else if m, ok := v.(map[string]any); ok {
-				for kk, vv := range m {
-                    fmt.Printf("%s:\n", k)
-					fmt.Printf("  %s = %s\n", kk, vv)
+			if len(k) > maxKeyLength {
+				maxKeyLength = len(k)
+			}
+			if m, ok := treeMap[k].(map[string]any); ok {
+				for kk := range m {
+					if len(kk) > maxKeyLength {
+						maxKeyLength = len(kk)
+					}
 				}
-
+			}
+		}
+		
+		// Add some padding for better readability
+		maxKeyLength += 2
+		
+		for _, k := range keys {
+			v = treeMap[k]
+			if s, ok := v.(string); ok {
+				fmt.Printf("%-*s = %s\n", maxKeyLength, k, s)
+			} else if m, ok := v.(map[string]any); ok {
+				fmt.Printf("%s:\n", k)
+				for kk, vv := range m {
+					fmt.Printf("  %-*s = %s\n", maxKeyLength, kk, vv)
+				}
+			} else {
+				// Handle other types (bool, int, etc.)
+				fmt.Printf("%-*s = %v\n", maxKeyLength, k, v)
 			}
 		}
 	default:
