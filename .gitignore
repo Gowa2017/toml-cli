@@ -23,3 +23,5 @@ toml-cli
 *test_output.toml
 *test_merged.toml
 *_test_*.toml
+.DS_Store
+cm

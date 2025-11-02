@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add CLAUDE.md)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nupdate: improve CLAUDE.md with accurate project information\n\nUpdated the CLAUDE.md file to accurately reflect the current state of the codebase:\n- Corrected the command name from ''toml-cli'' to ''cm''\n- Updated command usage examples to match actual implementation\n- Removed references to non-existent files (keysparsing.go, lexer.go, etc.)\n- Added information about additional commands\n- Updated dependencies list to include github.com/fatih/color\n- Simplified testing strategy to match actual tests\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(go build -o cm)",
+      "Bash(./cm get -c ./sample/get-set/app.toml server)",
+      "Bash(./cm get -c ./sample/get-set/app.toml app)",
+      "Bash(./cm get -c ./sample/get-set/app.toml database)",
+      "Bash(./cm get -c ./sample/get-set/app.toml features)",
+      "Bash(git add cmd/root.go)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfix: set consistent width for query result output keys\n\nModified the printAConfigure function to ensure all sub-keys in query results\nhave the same width for better readability. The implementation:\n1. Calculates the maximum key length among all sub-keys\n2. Uses that length as the print width for all keys\n3. Handles different data types (string, map, bool, int, etc.)\n\nThis improves the visual alignment of query results making them easier to read.\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(./cm:*)",
+      "Bash(ssh-keygen:*)",
+      "Bash(cat:*)",
+      "Bash(echo:*)",
+      "Bash(~/.ssh/config)",
+      "Bash(ssh:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

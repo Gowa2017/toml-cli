@@ -42,6 +42,7 @@ func init() {
 	rootCmd.AddCommand(NamespaceTomlCommand())
 	rootCmd.AddCommand(RenameTomlCommand())
 	rootCmd.AddCommand(ScanTomlCommand())
+	rootCmd.AddCommand(sshCmd)
 }
 
 // Execute commands
@@ -76,7 +77,7 @@ func printAConfigure(key string, v any) {
 			keys = append(keys, k)
 		}
 		sort.Strings(keys)
-		
+
 		// Calculate the maximum key length for consistent width
 		maxKeyLength := 0
 		treeMap := tree.ToMap()
@@ -92,14 +93,18 @@ func printAConfigure(key string, v any) {
 				}
 			}
 		}
-		
+
 		// Add some padding for better readability
 		maxKeyLength += 2
-		
+
 		for _, k := range keys {
 			v = treeMap[k]
 			if s, ok := v.(string); ok {
-				fmt.Printf("%-*s = %s\n", maxKeyLength, k, s)
+				if k == "private_key" {
+					fmt.Printf("%-*s = %s\n", maxKeyLength, k, "********************")
+				} else {
+					fmt.Printf("%-*s = %s\n", maxKeyLength, k, s)
+				}
 			} else if m, ok := v.(map[string]any); ok {
 				fmt.Printf("%s:\n", k)
 				for kk, vv := range m {
