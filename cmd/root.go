@@ -43,6 +43,8 @@ func init() {
 	rootCmd.AddCommand(RenameTomlCommand())
 	rootCmd.AddCommand(ScanTomlCommand())
 	rootCmd.AddCommand(sshCmd)
+	rootCmd.AddCommand(GetEncryptCommand())
+	rootCmd.AddCommand(GetDecryptCommand())
 }
 
 // Execute commands
@@ -100,11 +102,7 @@ func printAConfigure(key string, v any) {
 		for _, k := range keys {
 			v = treeMap[k]
 			if s, ok := v.(string); ok {
-				if k == "private_key" {
-					fmt.Printf("%-*s = %s\n", maxKeyLength, k, "********************")
-				} else {
-					fmt.Printf("%-*s = %s\n", maxKeyLength, k, s)
-				}
+				fmt.Printf("%-*s = %s\n", maxKeyLength, k, s)
 			} else if m, ok := v.(map[string]any); ok {
 				fmt.Printf("%s:\n", k)
 				for kk, vv := range m {

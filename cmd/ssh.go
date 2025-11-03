@@ -343,12 +343,10 @@ func runSSHConnect(cmd *cobra.Command, args []string) {
 		} else if host.PrivateKey != "" {
 			keyPath = filepath.Join(os.Getenv("HOME"), ".ssh", "cm_tmp")
 			// Ensure the key file exists
-			if _, err := os.Stat(keyPath); os.IsNotExist(err) {
-				// Write the key to file if it doesn't exist
-				if err := os.WriteFile(keyPath, []byte(host.PrivateKey+"\r"), 0600); err != nil {
-					color.Red("Failed to write private key file: %v", err)
-					return
-				}
+			// Write the key to file if it doesn't exist
+			if err := os.WriteFile(keyPath, []byte(host.PrivateKey+"\n"), 0600); err != nil {
+				color.Red("Failed to write private key file: %v", err)
+				return
 			}
 		}
 

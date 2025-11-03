@@ -15,7 +15,17 @@
       "Bash(cat:*)",
       "Bash(echo:*)",
       "Bash(~/.ssh/config)",
-      "Bash(ssh:*)"
+      "Bash(ssh:*)",
+      "Bash(go mod edit:*)",
+      "Bash(go mod tidy:*)",
+      "Bash(go get:*)",
+      "Bash(go test:*)",
+      "Bash(goimports:*)",
+      "Bash(CMDB_PASSWORD=test123 ./cm get:*)",
+      "Bash(CMDB_PASSWORD=test123 ./cm set:*)",
+      "Bash(unset:*)",
+      "Bash(test.toml)",
+      "Bash(go vet:*)"
     ],
     "deny": [],
     "ask": []

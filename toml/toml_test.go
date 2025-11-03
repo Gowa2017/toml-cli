@@ -46,7 +46,7 @@ func TestSet(t *testing.T) {
 	query := "app.name"
 	value := "test-app"
 
-	err = toml.Set(query, value)
+	err = toml.Set(query, "", value)
 	require.Nil(t, err)
 
 	toml.Write()
