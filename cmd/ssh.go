@@ -393,14 +393,8 @@ func runSSHConnect(cmd *cobra.Command, args []string) {
 		// Add user@hostname
 		sshArgs = append(sshArgs, fmt.Sprintf("%s@%s", host.User, host.Hostname))
 
-		// Check if sshpass is available
-		if _, err := exec.LookPath("sshpass"); err != nil {
-			color.Red("sshpass is required for password authentication. Install it with: brew install sshpass (macOS) or apt-get install sshpass (Ubuntu)")
-			return
-		}
-
 		color.Cyan("Connecting to %s using password authentication...", hostKey)
-		cmdExec = exec.Command("sshpass", "-p", host.Password, "ssh")
+		cmdExec = exec.Command("ssh")
 		cmdExec.Args = append(cmdExec.Args, sshArgs...)
 	}
 
