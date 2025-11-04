@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -617,6 +618,45 @@ func runSSHKeyImportBoth(cmd *cobra.Command, args []string) {
 
 // Helper functions
 
+func findMatchingHostKeys(fuzzyKey string, tomlFile *toml.Toml) []string {
+	var matches []string
+	fuzzyKey = strings.ToLower(fuzzyKey)
+
+	for _, key := range tomlFile.Keys() {
+		if strings.Contains(key, ":host:") {
+			if strings.Contains(strings.ToLower(key), fuzzyKey) {
+				matches = append(matches, key)
+			}
+		}
+	}
+
+	return matches
+}
+
+func promptHostSelection(matches []string) (string, error) {
+	fmt.Println()
+	color.Cyan("Multiple hosts found matching your search:")
+	fmt.Println()
+
+	for i, hostKey := range matches {
+		fmt.Printf("%d. %s\n", i+1, hostKey)
+	}
+
+	fmt.Println()
+	fmt.Printf("Select host (1-%d): ", len(matches))
+
+	reader := bufio.NewReader(os.Stdin)
+	input, _ := reader.ReadString('\n')
+	input = strings.TrimSpace(input)
+
+	selection, err := strconv.Atoi(input)
+	if err != nil || selection < 1 || selection > len(matches) {
+		return "", fmt.Errorf("invalid selection")
+	}
+
+	return matches[selection-1], nil
+}
+
 func printHostInfo(hostKey string, tomlFile *toml.Toml) {
 	host, err := getHostFromCMDB(hostKey, *tomlFile)
 	if err != nil {
@@ -742,7 +782,22 @@ func copyFile(src, dst string) error {
 func getHostFromCMDB(hostKey string, tomlFile toml.Toml) (*SSHHost, error) {
 	hostData := tomlFile.Get(hostKey)
 	if hostData == nil {
-		return nil, fmt.Errorf("host '%s' not found in cmdb", hostKey)
+		// Try fuzzy matching if exact match not found
+		matches := findMatchingHostKeys(hostKey, &tomlFile)
+		if len(matches) == 0 {
+			return nil, fmt.Errorf("host '%s' not found in cmdb", hostKey)
+		} else if len(matches) == 1 {
+			hostKey = matches[0]
+			hostData = tomlFile.Get(hostKey)
+		} else {
+			// Multiple matches found, prompt user to select
+			selectedHost, err := promptHostSelection(matches)
+			if err != nil {
+				return nil, fmt.Errorf("failed to select host: %v", err)
+			}
+			hostKey = selectedHost
+			hostData = tomlFile.Get(hostKey)
+		}
 	}
 
 	// The Get method returns a *lib.Tree for complex objects
