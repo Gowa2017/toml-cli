@@ -3,13 +3,14 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 
 	"github.com/fatih/color"
 	lib "github.com/pelletier/go-toml"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 var path string
@@ -52,13 +53,18 @@ func init() {
 // Execute commands
 func Execute() {
 	home := os.Getenv("HOME")
+	if home == "" {
+		// Windows fallback
+		home = os.Getenv("USERPROFILE")
+	}
 	if path == "" {
-		path = fmt.Sprintf("%s/.config/cmdb/cmdb.toml", home)
+		path = filepath.Join(home, ".config", "cmdb", "cmdb.toml")
 		fmt.Printf("配置文件未指定，使用默认文件: %s\n", path)
 	}
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		if err := os.MkdirAll(fmt.Sprintf("%s/.config/cmdb", home), 0700); err != nil {
-			log.Fatalf("Create cmdb dir %s/.config/cmdb failed: %s", home, err)
+		configDir := filepath.Join(home, ".config", "cmdb")
+		if err := os.MkdirAll(configDir, 0700); err != nil {
+			log.Fatalf("Create cmdb dir %s failed: %s", configDir, err)
 		}
 		f, err := os.OpenFile(path, os.O_CREATE, 0700)
 		if err != nil {
