@@ -342,7 +342,12 @@ func runSSHConnect(cmd *cobra.Command, args []string) {
 		if host.KeyPath != "" {
 			keyPath = host.KeyPath
 		} else if host.PrivateKey != "" {
-			keyPath = filepath.Join(os.Getenv("HOME"), ".ssh", "cm_tmp")
+			home := os.Getenv("HOME")
+			if home == "" {
+				// Windows fallback
+				home = os.Getenv("USERPROFILE")
+			}
+			keyPath = filepath.Join(home, ".ssh", "cm_tmp")
 			// Ensure the key file exists
 			// Write the key to file if it doesn't exist
 			if err := os.WriteFile(keyPath, []byte(host.PrivateKey+"\n"), 0600); err != nil {
@@ -369,7 +374,7 @@ func runSSHConnect(cmd *cobra.Command, args []string) {
 		// Add user@hostname
 		sshArgs = append(sshArgs, fmt.Sprintf("%s@%s", host.User, host.Hostname))
 
-		color.Cyan("Connecting to %s using key authentication (%s)...", hostKey, keyPath)
+		color.Cyan("Connecting to %s[%s:%v] using key authentication (%s)...", hostKey, host.Hostname, host.Port, keyPath)
 		cmdExec = exec.Command("ssh", sshArgs...)
 
 	} else if hasPassword {
@@ -417,7 +422,12 @@ func runSSHSync(cmd *cobra.Command, args []string) {
 	}
 
 	// Create separate cmdb SSH config file
-	sshConfigPath := filepath.Join(os.Getenv("HOME"), ".ssh", "cmdb_config")
+	home := os.Getenv("HOME")
+	if home == "" {
+		// Windows fallback
+		home = os.Getenv("USERPROFILE")
+	}
+	sshConfigPath := filepath.Join(home, ".ssh", "cmdb_config")
 
 	// Create cmdb config file
 	file, err := os.OpenFile(sshConfigPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
@@ -450,7 +460,7 @@ func runSSHSync(cmd *cobra.Command, args []string) {
 	}
 
 	// Add Include directive to main SSH config if not already present
-	mainSSHConfigPath := filepath.Join(os.Getenv("HOME"), ".ssh", "config")
+	mainSSHConfigPath := filepath.Join(home, ".ssh", "config")
 	includeLine := fmt.Sprintf("Include %s", sshConfigPath)
 
 	if err := addIncludeToSSHConfig(mainSSHConfigPath, includeLine); err != nil {
@@ -740,7 +750,12 @@ func generateSSHConfigEntry(hostKey string, host SSHHost) string {
 }
 
 func generateSSHKeyPair(hostKey string, host *SSHHost) error {
-	sshDir := filepath.Join(os.Getenv("HOME"), ".ssh")
+	home := os.Getenv("HOME")
+	if home == "" {
+		// Windows fallback
+		home = os.Getenv("USERPROFILE")
+	}
+	sshDir := filepath.Join(home, ".ssh")
 	if err := os.MkdirAll(sshDir, 0700); err != nil {
 		return err
 	}
@@ -820,8 +835,9 @@ func getHostFromCMDB(hostKey string, tomlFile toml.Toml) (*SSHHost, error) {
 	if user, ok := hostMap["user"].(string); ok {
 		host.User = user
 	}
-	if port, ok := hostMap["port"].(int64); ok {
-		host.Port = int(port)
+	if port, ok := hostMap["port"].(string); ok {
+		p, _ := strconv.ParseInt(port, 10, 64)
+		host.Port = int(p)
 	}
 	if password, ok := hostMap["password"].(string); ok {
 		host.Password = password
